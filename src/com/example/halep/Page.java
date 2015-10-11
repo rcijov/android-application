@@ -12,4 +12,9 @@ public class Page {
 	 */
 	public String body;
 	
+	/**
+	 * Type of the Page
+	 */
+	public TypePage type;
+	
 }
