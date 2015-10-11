@@ -16,17 +16,23 @@ public class Pages extends Home {
 	public static ArrayList<String> arrTitles = new ArrayList<String>();
 	
 	/* HOME, NEWS, RANKS, RESULTS, PHOTOS, VIDEOS */
+	private static final String[] lookupPages = new String[] {
+			"HOME",
+			"NEWS",
+			"RANKS",
+			"RESULTS",
+			"PHOTOS",
+			"VIDEOS"
+	};
+	
 	public Pages()
 	{
 		if(arrPages.size() == 0)
 		{
-			addPage("HOME");
-	        addPage("NEWS");
-	        addPage("RANKS");
-	        addPage("RESULTS");
-	        addPage("PHOTOS");
-	        addPage("VIDEOS");
-	        
+			for(String str : lookupPages)
+			{
+				addPage(str);
+			}	        
 		}
 	}
 	

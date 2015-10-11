@@ -41,6 +41,15 @@ public class Home extends ActionBarActivity implements
 	private CharSequence mTitle;
 
 	/* HOME, NEWS, RANKS, RESULTS, PHOTOS, VIDEOS */
+	private static final int[] lookupPages = new int[] {
+		   R.string.home,
+		   R.string.news,
+		   R.string.ranks,
+		   R.string.results,
+		   R.string.photos,
+		   R.string.videos
+	};
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -55,15 +64,15 @@ public class Home extends ActionBarActivity implements
 				(DrawerLayout) findViewById(R.id.drawer_layout));
 		
 		/* Set Body For Pages */
-		pages.arrPages.get(0).body = getResources().getString(R.string.home);
-		pages.arrPages.get(1).body = getResources().getString(R.string.news);
-		pages.arrPages.get(2).body = getResources().getString(R.string.ranks);
-		pages.arrPages.get(3).body = getResources().getString(R.string.results);
-		pages.arrPages.get(4).body = getResources().getString(R.string.photos);
-		pages.arrPages.get(5).body = getResources().getString(R.string.videos);
+		int i = 0;
+		for(Page page: pages.arrPages)
+		{
+			page.body = getResources().getString(lookupPages[i]);
+			i = i + 1;
+		}
 		
-		TextView tv = (TextView) findViewById(R.id.textBody);
-        tv.setText(pages.arrPages.get(0).body);
+		/* Show Page Home */
+		setPage(0);
 	}
 
 	@Override
@@ -84,8 +93,17 @@ public class Home extends ActionBarActivity implements
 		/**
 		 * Change Body text
 		 */
+		setPage(number - 1);
+	}
+	
+	/**
+	 * Set Page for the Viewer
+	 * @param number
+	 */
+	private void setPage(int number)
+	{
 		TextView tv = (TextView) findViewById(R.id.textBody);
-        tv.setText(pages.arrPages.get(number - 1).body);
+        tv.setText(pages.arrPages.get(number).body);
 	}
 
 	public void restoreActionBar() {
