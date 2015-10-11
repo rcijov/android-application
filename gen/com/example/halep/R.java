@@ -2236,6 +2236,10 @@ containing a value of this type.
         public static final int home=0x7f0a001a;
         public static final int navigation_drawer_close=0x7f0a0017;
         public static final int navigation_drawer_open=0x7f0a0016;
+        public static final int news=0x7f0a001b;
+        public static final int photos=0x7f0a001e;
+        public static final int ranks=0x7f0a001c;
+        public static final int results=0x7f0a001d;
         /**  Text to use when the number in a notification info is too large
          (greater than status_bar_notification_info_maxnum, defined in
          values/config.xml) and must be truncated. May need to be localized
@@ -2246,6 +2250,7 @@ containing a value of this type.
         public static final int title_section1=0x7f0a0013;
         public static final int title_section2=0x7f0a0014;
         public static final int title_section3=0x7f0a0015;
+        public static final int videos=0x7f0a001f;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat=0x7f0b0041;

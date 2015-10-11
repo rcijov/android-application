@@ -27,6 +27,7 @@ public class Home extends ActionBarActivity implements
 	 */
 	private static Pages pages = new Pages();
 	
+	
 	/**
 	 * Fragment managing the behaviors, interactions and presentation of the
 	 * navigation drawer.
@@ -39,6 +40,7 @@ public class Home extends ActionBarActivity implements
 	 */
 	private CharSequence mTitle;
 
+	/* HOME, NEWS, RANKS, RESULTS, PHOTOS, VIDEOS */
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -51,6 +53,17 @@ public class Home extends ActionBarActivity implements
 		// Set up the drawer.
 		mNavigationDrawerFragment.setUp(R.id.navigation_drawer,
 				(DrawerLayout) findViewById(R.id.drawer_layout));
+		
+		/* Set Body For Pages */
+		pages.arrPages.get(0).body = getResources().getString(R.string.home);
+		pages.arrPages.get(1).body = getResources().getString(R.string.news);
+		pages.arrPages.get(2).body = getResources().getString(R.string.ranks);
+		pages.arrPages.get(3).body = getResources().getString(R.string.results);
+		pages.arrPages.get(4).body = getResources().getString(R.string.photos);
+		pages.arrPages.get(5).body = getResources().getString(R.string.videos);
+		
+		TextView tv = (TextView) findViewById(R.id.textBody);
+        tv.setText(pages.arrPages.get(0).body);
 	}
 
 	@Override
@@ -68,6 +81,11 @@ public class Home extends ActionBarActivity implements
 		 * Top Title
 		 */
 		mTitle = pages.arrTitles.get(number - 1);
+		/**
+		 * Change Body text
+		 */
+		TextView tv = (TextView) findViewById(R.id.textBody);
+        tv.setText(pages.arrPages.get(number - 1).body);
 	}
 
 	public void restoreActionBar() {

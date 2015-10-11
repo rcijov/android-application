@@ -111,12 +111,6 @@ public class NavigationDrawerFragment extends Fragment {
 					public void onItemClick(AdapterView<?> parent, View view,
 							int position, long id) {
 						selectItem(position);
-						
-						/**
-						 * Change Body text
-						 */
-						TextView tv = (TextView) getActivity().findViewById(R.id.textBody);
-				        tv.setText(pages.arrPages.get(position).body);
 					}
 				});
 		
