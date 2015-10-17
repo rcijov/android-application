@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <string name="hello">hello</string>
     <string name="app_name">Halep</string>
     <string name="title_section1">Home</string>
     <string name="title_section2">Ranks</string>
