@@ -6,8 +6,9 @@ import java.util.Random;
 import com.simona.halep.Base;
 import com.simona.halep.R;
 import com.simona.halep.R.layout;
-import com.simona.halep.Database.CommentsDataSource;
-import com.simona.halep.Database.Comment;
+import com.simona.halep.Database.NewsDataSource;
+import com.simona.halep.Database.StatsDataSource;
+import com.simona.halep.Database.Entities.Stats;
 
 import android.app.Activity;
 import android.app.ListFragment;
@@ -21,11 +22,11 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v4.app.Fragment;
 
-public class News extends Fragment implements android.view.View.OnClickListener {  
+public class News extends Fragment {  
 	
-	   private CommentsDataSource datasource;
+	   private NewsDataSource datasource;
 	   private TextView textView;
-	   private List<Comment> values;
+	   private List<com.simona.halep.Database.Entities.News> values;
 
 	   public static News newInstance() {
 		   News fragment = new News();  
@@ -39,41 +40,34 @@ public class News extends Fragment implements android.view.View.OnClickListener 
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.news, container, false);  
 	       
-	       datasource = new CommentsDataSource(getActivity());
+	       datasource = new NewsDataSource(getActivity());
 	       datasource.open();
 
-	       values = datasource.getAllComments();
+	       values = datasource.getAllNews();
 	       textView = (TextView) rootView.findViewById(R.id.text);
-	       textView.setText(values.toString());
 	       
-	       ((Button)rootView.findViewById(R.id.add)).setOnClickListener(this);
-	       ((Button)rootView.findViewById(R.id.delete)).setOnClickListener(this);
+	       if(values.size() == 0)
+	       {
+	    	   com.simona.halep.Database.Entities.News news = new com.simona.halep.Database.Entities.News();
+		       news.setDate("1/02/2015");
+		       news.setTitle("Halep");
+		       news.setBody("test test");
+		       datasource.createNews(news.getDate(), news.getTitle(), news.getBody());
+		       values.add(news);
+	       }
+	       
+	       String txt = "";
+	       for(int i = 0; i < values.size(); i++)
+	       {
+	    	   txt = txt + "\n Date: " + values.get(i).getDate();
+	    	   txt = txt + " -- Title: " + values.get(i).getTitle();
+	    	   txt = txt + " -- Body: " + values.get(i).getBody();
+	       }
+	       textView.setText(txt);
 	       
 	       return rootView;  
 	   }
 	   
-//	   // Will be called via the onClick attribute
-//	   // of the buttons in main.xml
-	   public void onClick(View view) {
-	     Comment comment = null;
-	     switch (view.getId()) {
-	     case R.id.add:
-	       String[] comments = new String[] { "Cool", "Very nice", "Hate it" };
-	       int nextInt = new Random().nextInt(3);
-	       // save the new comment to the database
-	       comment = datasource.createComment(comments[nextInt]);
-	       values.add(comment);
-	       break;
-	     case R.id.delete:
-	       if (values.size() != 0) {
-	         comment = (Comment) values.get(0);
-	         datasource.deleteComment(comment);
-	         values.remove(0);
-	       }
-	       break;
-	     }
-	     textView.setText(values.toString());
-	   }
 
 	   @Override  
 	   public void onAttach(Activity activity) {  
