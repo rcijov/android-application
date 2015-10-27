@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.simona.halep.Base;
 import com.simona.halep.R;
+import com.simona.halep.Database.InitDatabase;
 import com.simona.halep.Database.RanksDataSource;
 import com.simona.halep.Database.ResultsDataSource;
 import com.simona.halep.Database.Entities.Rank;
@@ -20,7 +21,7 @@ import android.support.v4.app.Fragment;
 
 public class Results extends Fragment {  
 
-	   private ResultsDataSource datasource;
+	   private InitDatabase database;
 	   private TextView textView;
 	   private List<Result> values;
 	
@@ -36,27 +37,10 @@ public class Results extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.results, container, false);  
 	       
-	       datasource = new ResultsDataSource(getActivity());
-	       datasource.open();
-
-	       values = datasource.getAllResults();
+	       database = new InitDatabase(getActivity());
+	       values = database.getResults();
 	       textView = (TextView) rootView.findViewById(R.id.text);
 	
-	       if(values.size() == 1)
-	       {
-	    	   Result result = new Result();
-	    	   result.setDate("31/08/2016");
-	    	   result.setTournament("Canada");
-	    	   result.setRound("S1");
-	    	   result.setResult("Loss");
-	    	   result.setOpponent("Haha");
-	    	   result.setRank("3");
-	    	   result.setScore("6-1 6-2");
-		       datasource.createResult(result.getDate(), result.getTournament(), result.getRound(), result.getResult(), result.getOpponent()
-		    		   , result.getRank(), result.getScore());
-		       values.add(result);
-	       }
-	       
 	       String txt = "Date - Tournament - Round - Result - Opponent - Rank - Score";
 	       for(int i = 0; i < values.size(); i++)
 	       {

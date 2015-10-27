@@ -6,6 +6,7 @@ import java.util.Random;
 import com.simona.halep.Base;
 import com.simona.halep.R;
 import com.simona.halep.R.layout;
+import com.simona.halep.Database.InitDatabase;
 import com.simona.halep.Database.NewsDataSource;
 import com.simona.halep.Database.StatsDataSource;
 import com.simona.halep.Database.Entities.Stats;
@@ -24,7 +25,7 @@ import android.support.v4.app.Fragment;
 
 public class News extends Fragment {  
 	
-	   private NewsDataSource datasource;
+	   private InitDatabase database;
 	   private TextView textView;
 	   private List<com.simona.halep.Database.Entities.News> values;
 
@@ -39,22 +40,10 @@ public class News extends Fragment {
 	   @Override  
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.news, container, false);  
-	       
-	       datasource = new NewsDataSource(getActivity());
-	       datasource.open();
-
-	       values = datasource.getAllNews();
+	  
+	       database = new InitDatabase(getActivity());
+	       values = database.getNews();
 	       textView = (TextView) rootView.findViewById(R.id.text);
-	       
-	       if(values.size() == 0)
-	       {
-	    	   com.simona.halep.Database.Entities.News news = new com.simona.halep.Database.Entities.News();
-		       news.setDate("1/02/2015");
-		       news.setTitle("Halep");
-		       news.setBody("test test");
-		       datasource.createNews(news.getDate(), news.getTitle(), news.getBody());
-		       values.add(news);
-	       }
 	       
 	       String txt = "";
 	       for(int i = 0; i < values.size(); i++)

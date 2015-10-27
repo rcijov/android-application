@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.simona.halep.Base;
 import com.simona.halep.R;
+import com.simona.halep.Database.InitDatabase;
 import com.simona.halep.Database.RanksDataSource;
 import com.simona.halep.Database.StatsDataSource;
 import com.simona.halep.Database.Entities.Rank;
@@ -19,7 +20,7 @@ import android.support.v4.app.Fragment;
 
 public class Ranks extends Fragment {  
 
-	   private RanksDataSource datasource;
+	   private InitDatabase database;
 	   private TextView textView;
 	   private List<Rank> values;
 	
@@ -35,22 +36,10 @@ public class Ranks extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.ranks, container, false);  
 	       
-	       datasource = new RanksDataSource(getActivity());
-	       datasource.open();
-
-	       values = datasource.getAllRanks();
+	       database = new InitDatabase(getActivity());
+	       values = database.getRanks();
 	       textView = (TextView) rootView.findViewById(R.id.text);
-	
-	       if(values.size() == 0)
-	       {
-	    	   Rank rank = new Rank();
-		       rank.setDate("31/08/2015");
-		       rank.setTournament("US OPEN");
-		       rank.setRound("S");
-		       rank.setPoints("780");
-		       datasource.createRank(rank.getDate(), rank.getTournament(), rank.getRound(), rank.getPoints());
-		       values.add(rank);
-	       }
+
 	       
 	       String txt = "Date 	--   Tournament 	-- 	Round 	-- 	Points ";
 	       for(int i = 0; i < values.size(); i++)

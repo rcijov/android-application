@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.simona.halep.Base;
 import com.simona.halep.R;
+import com.simona.halep.Database.InitDatabase;
 import com.simona.halep.Database.StatsDataSource;
 import com.simona.halep.R.layout;
 
@@ -17,7 +18,7 @@ import android.support.v4.app.Fragment;
 
 public class Stats extends Fragment {  
 
-	   private StatsDataSource datasource;
+	   private InitDatabase database;
 	   private TextView textView;
 	   private List<com.simona.halep.Database.Entities.Stats> values;
 	
@@ -32,21 +33,10 @@ public class Stats extends Fragment {
 	   @Override  
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.stats, container, false);  
-	       
-	       datasource = new StatsDataSource(getActivity());
-	       datasource.open();
 
-	       values = datasource.getAllStats();
+	       database = new InitDatabase(getActivity());
+	       values = database.getStats();
 	       textView = (TextView) rootView.findViewById(R.id.text);
-	
-	       if(values.size() == 0)
-	       {
-	    	   com.simona.halep.Database.Entities.Stats stat = new com.simona.halep.Database.Entities.Stats();
-		       stat.setStat("Aces");
-		       stat.setNrStat("133");
-		       datasource.createStat(stat.getStat(),stat.getNrStat());
-		       values.add(stat);
-	       }
 	       
 	       String txt = "Simona Halep Main Ranks";
 	       for(int i = 0; i < values.size(); i++)
