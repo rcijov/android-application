@@ -4,7 +4,8 @@ public class Stats {
 
 	  private long id;
 	  private String stat;
-	  private String nrStat;
+	  private String nrStatYtd;
+	  private String nrStatCar;
 
 	  public long getId() {
 	    return id;
@@ -22,12 +23,20 @@ public class Stats {
 	    this.stat = stat;
 	  }
 	  
-	  public String getNrStat() {
-	    return nrStat;
+	  public String getNrStatYtd() {
+	    return nrStatYtd;
 	  }
 
-	  public void setNrStat(String nrStat) {
-	    this.nrStat = nrStat;
+	  public void setNrStatYtd(String nrStatYtd) {
+	    this.nrStatYtd = nrStatYtd;
+	  }
+	  
+	  public String getNrStatCar() {
+	    return nrStatCar;
+	  }
+
+	  public void setNrStatCar(String nrStatCar) {
+	    this.nrStatCar = nrStatCar;
 	  }
 	  
 }

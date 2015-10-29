@@ -14,17 +14,28 @@ import android.app.Fragment;
 
 public class InitDatabase {
 
-	private NewsDataSource newsDataSource;
-	private RanksDataSource ranksDataSource;
-	private ResultsDataSource resultsDataSource;
-	private StatsDataSource statsDataSource;
-
-	public InitDatabase(Activity activity) {  
-		newsDataSource = new NewsDataSource(activity);
-		ranksDataSource = new RanksDataSource(activity);
-		resultsDataSource = new ResultsDataSource(activity);
-		statsDataSource = new StatsDataSource(activity);
-   	}  
+	private static NewsDataSource newsDataSource;
+	private static RanksDataSource ranksDataSource;
+	private static ResultsDataSource resultsDataSource;
+	private static StatsDataSource statsDataSource;
+	private static MySQLiteHelper dbHelper;
+	private static DBHelper helpDatabase;
+	private static InitDatabase instance = null;
+	
+    public static InitDatabase getInstance(Activity activity) {
+      if(instance == null) {
+         instance = new InitDatabase();
+         
+         instance.helpDatabase = DBHelper.getInstance(); 
+         instance.dbHelper = new MySQLiteHelper(activity, helpDatabase.DATABASE_NAME, helpDatabase.listDatabases);
+			
+         instance.statsDataSource = new StatsDataSource(dbHelper);
+         instance.newsDataSource = new NewsDataSource(dbHelper);
+         instance.ranksDataSource = new RanksDataSource(dbHelper);
+         instance.resultsDataSource = new ResultsDataSource(dbHelper);
+      }
+      return instance;
+    }
 	
 	private void initNews()
 	{
@@ -101,8 +112,9 @@ public class InitDatabase {
 		{
     	   com.simona.halep.Database.Entities.Stats stat = new com.simona.halep.Database.Entities.Stats();
 	       stat.setStat("Aces");
-	       stat.setNrStat("133");
-	       statsDataSource.createStat(stat.getStat(),stat.getNrStat());
+	       stat.setNrStatYtd("133");
+	       stat.setNrStatCar("543");
+	       statsDataSource.createStat(stat.getStat(),stat.getNrStatYtd(),stat.getNrStatCar());
 		}
 	}
 	

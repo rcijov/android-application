@@ -2,6 +2,7 @@ package com.simona.halep.Pages;
 
 import com.simona.halep.Base;
 import com.simona.halep.R;
+import com.simona.halep.Database.InitDatabase;
 import com.simona.halep.R.layout;
 
 import android.app.Activity;
@@ -24,6 +25,9 @@ public class Home extends Fragment {
 	   @Override  
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.fragment_home, container, false);  
+	       
+	       InitDatabase database = InitDatabase.getInstance(getActivity());
+	       
 	       return rootView;  
 	   }  
 

@@ -17,26 +17,11 @@ public class NewsDataSource {
 		// Database fields
 		  private SQLiteDatabase database;
 		  private MySQLiteHelper dbHelper;
-		  
-		  public static final String TABLE = "news";
-		  public static final String COLUMN_ID = "_id";
-		  public static final String COLUMN_DATE = "date";
-		  public static final String COLUMN_TITLE = "title";
-		  public static final String COLUMN_BODY = "body";
-		  private static final String DATABASE_NAME = "news.db";
-		  
-		  private static final String DATABASE_CREATE = "create table "
-			      + TABLE + "(" + COLUMN_ID
-			      + " integer primary key autoincrement, " + COLUMN_DATE
-			      + " text not null, " + COLUMN_TITLE
-			      + " text not null, " + COLUMN_BODY
-		  		  + " text not null);";
-		  
-		  private String[] allColumns = { COLUMN_ID, COLUMN_DATE, COLUMN_TITLE, COLUMN_BODY };
+		  private DBHelper crHelper;
 
-	
-		  public NewsDataSource(Context context) {
-			  dbHelper = new MySQLiteHelper(context, DATABASE_NAME, DATABASE_CREATE, TABLE);
+		  public NewsDataSource(MySQLiteHelper dbHelper) {
+			  this.dbHelper = dbHelper;
+			  this.crHelper = DBHelper.getInstance();
 		  }
 
 		  public void open() throws SQLException {
@@ -49,11 +34,11 @@ public class NewsDataSource {
 		  
 		  public News createNews(String date, String title, String body) {
 			  ContentValues values = new ContentValues();
-			  values.put(COLUMN_DATE, date);
-			  values.put(COLUMN_TITLE, title);
-			  values.put(COLUMN_BODY, body);
-			  long insertId = database.insert(TABLE, null, values);
-			  Cursor cursor = database.query(TABLE, allColumns, COLUMN_ID + " = " + insertId, null, null, null, null);
+			  values.put(crHelper.COLUMN_DATE, date);
+			  values.put(crHelper.COLUMN_TITLE, title);
+			  values.put(crHelper.COLUMN_BODY, body);
+			  long insertId = database.insert(crHelper.NEWS, null, values);
+			  Cursor cursor = database.query(crHelper.NEWS, crHelper.newsColumns, crHelper.COLUMN_ID + " = " + insertId, null, null, null, null);
 			  cursor.moveToFirst();
 			  News news = cursorToNews(cursor);
 			  cursor.close();
@@ -63,22 +48,29 @@ public class NewsDataSource {
 		  public List<News> getAllNews() {
 			    List<News> newsList = new ArrayList<News>();
 
-			    Cursor cursor = database.query(TABLE, allColumns, null, null, null, null, null);
-
-			    cursor.moveToFirst();
-			    while (!cursor.isAfterLast()) {
-			      News news = cursorToNews(cursor);
-			      newsList.add(news);
-			      cursor.moveToNext();
+			    try
+			    {
+			    	Cursor cursor = database.query(crHelper.NEWS, crHelper.newsColumns, null, null, null, null, null);
+			    	cursor.moveToFirst();
+				    while (!cursor.isAfterLast()) {
+				      News news = cursorToNews(cursor);
+				      newsList.add(news);
+				      cursor.moveToNext();
+				    }
+				    // make sure to close the cursor
+				    cursor.close();
 			    }
-			    // make sure to close the cursor
-			    cursor.close();
+			    catch(Exception e)
+			    {
+			    	database.execSQL(crHelper.DATABASE_NEWS);
+			    }
+			    
 			    return newsList;
 		  }
 		  
 		  public void deleteNews(News news) {
 			  long id = news.getId();
-			  database.delete(TABLE, COLUMN_ID + " = " + id, null);
+			  database.delete(crHelper.NEWS, crHelper.COLUMN_ID + " = " + id, null);
 		  }
 		  
 		  private News cursorToNews(Cursor cursor) {

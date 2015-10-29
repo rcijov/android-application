@@ -16,24 +16,11 @@ public class StatsDataSource {
 		// Database fields
 		  private SQLiteDatabase database;
 		  private MySQLiteHelper dbHelper;
+		  private DBHelper crHelper;
 		  
-		  public static final String TABLE = "stats";
-		  public static final String COLUMN_ID = "_id";
-		  public static final String COLUMN_STAT = "stat";
-		  public static final String COLUMN_STAT_NR = "statNr";
-		  private static final String DATABASE_NAME = "stats.db";
-		  
-		  private static final String DATABASE_CREATE = "create table "
-			      + TABLE + "(" + COLUMN_ID
-			      + " integer primary key autoincrement, " + COLUMN_STAT
-			      + " text not null, " + COLUMN_STAT_NR
-		  		  + " text not null);";
-		  
-		  private String[] allColumns = { COLUMN_ID, COLUMN_STAT, COLUMN_STAT_NR };
-
-	
-		  public StatsDataSource(Context context) {
-			  dbHelper = new MySQLiteHelper(context, DATABASE_NAME, DATABASE_CREATE, TABLE);
+		  public StatsDataSource(MySQLiteHelper dbHelper) {
+			  this.dbHelper = dbHelper;
+			  this.crHelper = DBHelper.getInstance();
 		  }
 
 		  public void open() throws SQLException {
@@ -44,12 +31,13 @@ public class StatsDataSource {
 			  dbHelper.close();
 		  }
 		  
-		  public Stats createStat(String stat, String statNr) {
+		  public Stats createStat(String stat, String statNrYtd, String statNrCar) {
 			  ContentValues values = new ContentValues();
-			  values.put(COLUMN_STAT, stat);
-			  values.put(COLUMN_STAT_NR, statNr);
-			  long insertId = database.insert(TABLE, null, values);
-			  Cursor cursor = database.query(TABLE, allColumns, COLUMN_ID + " = " + insertId, null, null, null, null);
+			  values.put(crHelper.COLUMN_STAT, stat);
+			  values.put(crHelper.COLUMN_STAT_NR_YTD, statNrYtd);
+			  values.put(crHelper.COLUMN_STAT_NR_CAR, statNrCar);
+			  long insertId = database.insert(crHelper.STATS, null, values);
+			  Cursor cursor = database.query(crHelper.STATS, crHelper.statsColumns, crHelper.COLUMN_ID + " = " + insertId, null, null, null, null);
 			  cursor.moveToFirst();
 			  Stats newStat = cursorToStats(cursor);
 			  cursor.close();
@@ -57,31 +45,41 @@ public class StatsDataSource {
 		  }
 		  
 		  public List<Stats> getAllStats() {
+			  
 			    List<Stats> stats = new ArrayList<Stats>();
 
-			    Cursor cursor = database.query(TABLE, allColumns, null, null, null, null, null);
+			    try
+			    {
+			    	Cursor cursor = database.query(crHelper.STATS, crHelper.statsColumns, null, null, null, null, null);
 
-			    cursor.moveToFirst();
-			    while (!cursor.isAfterLast()) {
-			      Stats stat = cursorToStats(cursor);
-			      stats.add(stat);
-			      cursor.moveToNext();
+				    cursor.moveToFirst();
+				    while (!cursor.isAfterLast()) {
+				      Stats stat = cursorToStats(cursor);
+				      stats.add(stat);
+				      cursor.moveToNext();
+				    }
+				    // make sure to close the cursor
+				    cursor.close();
 			    }
-			    // make sure to close the cursor
-			    cursor.close();
+			    catch(Exception e)
+			    {
+			    	database.execSQL(crHelper.DATABASE_STATS);
+			    }
+			    
 			    return stats;
 		  }
 		  
 		  public void deleteStat(Stats stat) {
 			  long id = stat.getId();
-			  database.delete(TABLE, COLUMN_ID + " = " + id, null);
+			  database.delete(crHelper.STATS, crHelper.COLUMN_ID + " = " + id, null);
 		  }
 		  
 		  private Stats cursorToStats(Cursor cursor) {
 			  Stats stat = new Stats();
 			  stat.setId(cursor.getLong(0));
 			  stat.setStat(cursor.getString(1));
-			  stat.setNrStat(cursor.getString(2));
+			  stat.setNrStatYtd(cursor.getString(2));
+			  stat.setNrStatCar(cursor.getString(3));
 			  return stat;
 		  }
 }

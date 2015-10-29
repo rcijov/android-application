@@ -17,28 +17,11 @@ public class RanksDataSource {
 		// Database fields
 		  private SQLiteDatabase database;
 		  private MySQLiteHelper dbHelper;
-		  
-		  public static final String TABLE = "rank";
-		  public static final String COLUMN_ID = "_id";
-		  public static final String COLUMN_DATE = "date";
-		  public static final String COLUMN_TOURNAMENT = "tournament";
-		  public static final String COLUMN_ROUND = "round";
-		  public static final String COLUMN_POINTS = "points";
-		  private static final String DATABASE_NAME = "ranks.db";
-		  
-		  private static final String DATABASE_CREATE = "create table "
-			      + TABLE + "(" + COLUMN_ID
-			      + " integer primary key autoincrement, " + COLUMN_DATE
-			      + " text not null, " + COLUMN_TOURNAMENT
-			      + " text not null, " + COLUMN_ROUND
-			      + " text not null, " + COLUMN_POINTS
-		  		  + " text not null);";
-		  
-		  private String[] allColumns = { COLUMN_ID, COLUMN_DATE, COLUMN_TOURNAMENT, COLUMN_ROUND, COLUMN_POINTS };
+		  private DBHelper crHelper;
 
-	
-		  public RanksDataSource(Context context) {
-			  dbHelper = new MySQLiteHelper(context, DATABASE_NAME, DATABASE_CREATE, TABLE);
+		  public RanksDataSource(MySQLiteHelper dbHelper) {
+			  this.dbHelper = dbHelper;
+			  this.crHelper = DBHelper.getInstance();
 		  }
 
 		  public void open() throws SQLException {
@@ -51,12 +34,12 @@ public class RanksDataSource {
 		  
 		  public Rank createRank(String date, String tournament, String round, String points) {
 			  ContentValues values = new ContentValues();
-			  values.put(COLUMN_DATE, date);
-			  values.put(COLUMN_TOURNAMENT, tournament);
-			  values.put(COLUMN_ROUND, round);
-			  values.put(COLUMN_POINTS, points);
-			  long insertId = database.insert(TABLE, null, values);
-			  Cursor cursor = database.query(TABLE, allColumns, COLUMN_ID + " = " + insertId, null, null, null, null);
+			  values.put(crHelper.COLUMN_DATE, date);
+			  values.put(crHelper.COLUMN_TOURNAMENT, tournament);
+			  values.put(crHelper.COLUMN_ROUND, round);
+			  values.put(crHelper.COLUMN_POINTS, points);
+			  long insertId = database.insert(crHelper.RANK, null, values);
+			  Cursor cursor = database.query(crHelper.RANK, crHelper.rankColumns, crHelper.COLUMN_ID + " = " + insertId, null, null, null, null);
 			  cursor.moveToFirst();
 			  Rank newRank = cursorToRanks(cursor);
 			  cursor.close();
@@ -64,24 +47,33 @@ public class RanksDataSource {
 		  }
 		  
 		  public List<Rank> getAllRanks() {
+			  
 			    List<Rank> ranks = new ArrayList<Rank>();
 
-			    Cursor cursor = database.query(TABLE, allColumns, null, null, null, null, null);
+			    try
+			    {
+			    	Cursor cursor = database.query(crHelper.RANK, crHelper.rankColumns, null, null, null, null, null);
 
-			    cursor.moveToFirst();
-			    while (!cursor.isAfterLast()) {
-			      Rank rank = cursorToRanks(cursor);
-			      ranks.add(rank);
-			      cursor.moveToNext();
+				    cursor.moveToFirst();
+				    while (!cursor.isAfterLast()) {
+				      Rank rank = cursorToRanks(cursor);
+				      ranks.add(rank);
+				      cursor.moveToNext();
+				    }
+				    // make sure to close the cursor
+				    cursor.close();
 			    }
-			    // make sure to close the cursor
-			    cursor.close();
+			    catch(Exception e)
+			    {
+			    	database.execSQL(crHelper.DATABASE_RANK);
+			    }
+			    
 			    return ranks;
 		  }
 		  
 		  public void deleteRank(Rank rank) {
 			  long id = rank.getId();
-			  database.delete(TABLE, COLUMN_ID + " = " + id, null);
+			  database.delete(crHelper.RANK, crHelper.COLUMN_ID + " = " + id, null);
 		  }
 		  
 		  private Rank cursorToRanks(Cursor cursor) {

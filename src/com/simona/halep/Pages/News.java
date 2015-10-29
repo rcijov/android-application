@@ -41,7 +41,7 @@ public class News extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.news, container, false);  
 	  
-	       database = new InitDatabase(getActivity());
+	       database = InitDatabase.getInstance(getActivity());
 	       values = database.getNews();
 	       textView = (TextView) rootView.findViewById(R.id.text);
 	       

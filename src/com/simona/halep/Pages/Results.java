@@ -37,7 +37,7 @@ public class Results extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.results, container, false);  
 	       
-	       database = new InitDatabase(getActivity());
+	       database = InitDatabase.getInstance(getActivity());
 	       values = database.getResults();
 	       textView = (TextView) rootView.findViewById(R.id.text);
 	

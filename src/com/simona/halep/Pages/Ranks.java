@@ -36,7 +36,7 @@ public class Ranks extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.ranks, container, false);  
 	       
-	       database = new InitDatabase(getActivity());
+	       database = InitDatabase.getInstance(getActivity());
 	       values = database.getRanks();
 	       textView = (TextView) rootView.findViewById(R.id.text);
 

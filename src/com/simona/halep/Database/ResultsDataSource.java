@@ -18,34 +18,11 @@ public class ResultsDataSource {
 		// Database fields
 		  private SQLiteDatabase database;
 		  private MySQLiteHelper dbHelper;
-		  
-		  public static final String TABLE = "results";
-		  public static final String COLUMN_ID = "_id";
-		  public static final String COLUMN_DATE = "date";
-		  public static final String COLUMN_TOURNAMENT = "tournament";
-		  public static final String COLUMN_ROUND = "round";
-		  public static final String COLUMN_RESULT = "result";
-		  public static final String COLUMN_OPPONENT = "opponent";
-		  public static final String COLUMN_RANK = "rank";
-		  public static final String COLUMN_SCORES = "scores";
-		  private static final String DATABASE_NAME = "results.db";
-		  
-		  private static final String DATABASE_CREATE = "create table "
-			      + TABLE + "(" + COLUMN_ID
-			      + " integer primary key autoincrement, " + COLUMN_DATE
-			      + " text not null, " + COLUMN_TOURNAMENT
-			      + " text not null, " + COLUMN_ROUND
-			      + " text not null, " + COLUMN_RESULT
-			      + " text not null, " + COLUMN_OPPONENT
-			      + " text not null, " + COLUMN_RANK
-			      + " text not null, " + COLUMN_SCORES
-		  		  + " text not null);";
-		  
-		  private String[] allColumns = { COLUMN_ID, COLUMN_DATE, COLUMN_TOURNAMENT, COLUMN_ROUND, COLUMN_RESULT, COLUMN_OPPONENT, COLUMN_RANK, COLUMN_SCORES };
+		  private DBHelper crHelper;
 
-	
-		  public ResultsDataSource(Context context) {
-			  dbHelper = new MySQLiteHelper(context, DATABASE_NAME, DATABASE_CREATE, TABLE);
+		  public ResultsDataSource(MySQLiteHelper dbHelper) {
+			  this.dbHelper = dbHelper;
+			  this.crHelper = DBHelper.getInstance();
 		  }
 
 		  public void open() throws SQLException {
@@ -58,15 +35,15 @@ public class ResultsDataSource {
 		  
 		  public Result createResult(String date, String tournament, String round, String result, String opponent, String rank, String score) {
 			  ContentValues values = new ContentValues();
-			  values.put(COLUMN_DATE, date);
-			  values.put(COLUMN_TOURNAMENT, tournament);
-			  values.put(COLUMN_ROUND, round);
-			  values.put(COLUMN_RESULT, result);
-			  values.put(COLUMN_OPPONENT, opponent);
-			  values.put(COLUMN_RANK, rank);
-			  values.put(COLUMN_SCORES, score);
-			  long insertId = database.insert(TABLE, null, values);
-			  Cursor cursor = database.query(TABLE, allColumns, COLUMN_ID + " = " + insertId, null, null, null, null);
+			  values.put(crHelper.COLUMN_DATE, date);
+			  values.put(crHelper.COLUMN_TOURNAMENT, tournament);
+			  values.put(crHelper.COLUMN_ROUND, round);
+			  values.put(crHelper.COLUMN_RESULT, result);
+			  values.put(crHelper.COLUMN_OPPONENT, opponent);
+			  values.put(crHelper.COLUMN_RANK, rank);
+			  values.put(crHelper.COLUMN_SCORES, score);
+			  long insertId = database.insert(crHelper.RESULTS, null, values);
+			  Cursor cursor = database.query(crHelper.RESULTS, crHelper.resultsColumns, crHelper.COLUMN_ID + " = " + insertId, null, null, null, null);
 			  cursor.moveToFirst();
 			  Result newResult = cursorToResult(cursor);
 			  cursor.close();
@@ -76,22 +53,30 @@ public class ResultsDataSource {
 		  public List<Result> getAllResults() {
 			    List<Result> results = new ArrayList<Result>();
 
-			    Cursor cursor = database.query(TABLE, allColumns, null, null, null, null, null);
+			    try
+			    {
+			    	Cursor cursor = database.query(crHelper.RESULTS, crHelper.resultsColumns, null, null, null, null, null);
 
-			    cursor.moveToFirst();
-			    while (!cursor.isAfterLast()) {
-			      Result result = cursorToResult(cursor);
-			      results.add(result);
-			      cursor.moveToNext();
+				    cursor.moveToFirst();
+				    while (!cursor.isAfterLast()) {
+				      Result result = cursorToResult(cursor);
+				      results.add(result);
+				      cursor.moveToNext();
+				    }
+				    // make sure to close the cursor
+				    cursor.close();
 			    }
-			    // make sure to close the cursor
-			    cursor.close();
+			    catch(Exception e)
+			    {
+			    	database.execSQL(crHelper.DATABASE_RESULTS);
+			    }
+			    
 			    return results;
 		  }
 		  
 		  public void deleteResult(Result result) {
 			  long id = result.getId();
-			  database.delete(TABLE, COLUMN_ID + " = " + id, null);
+			  database.delete(crHelper.RESULTS, crHelper.COLUMN_ID + " = " + id, null);
 		  }
 		  
 		  private Result cursorToResult(Cursor cursor) {

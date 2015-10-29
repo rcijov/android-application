@@ -34,7 +34,7 @@ public class Stats extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {  
 	       View rootView = inflater.inflate(R.layout.stats, container, false);  
 
-	       database = new InitDatabase(getActivity());
+	       database = InitDatabase.getInstance(getActivity());
 	       values = database.getStats();
 	       textView = (TextView) rootView.findViewById(R.id.text);
 	       
@@ -42,7 +42,8 @@ public class Stats extends Fragment {
 	       for(int i = 0; i < values.size(); i++)
 	       {
 	    	   txt = txt + "\n Number: " + values.get(i).getStat();
-	    	   txt = txt + " -- Stat: " + values.get(i).getNrStat();
+	    	   txt = txt + " -- Stat Ytd: " + values.get(i).getNrStatYtd();
+	    	   txt = txt + " -- Stat Car: " + values.get(i).getNrStatCar();
 	       }
 	       textView.setText(txt);
 	       
