@@ -1,4 +1,4 @@
-package com.simona.halep.test;
+package com.simona.halep.test.Api;
 
 import org.junit.Test;
 

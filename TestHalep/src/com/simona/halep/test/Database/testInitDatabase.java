@@ -1,4 +1,4 @@
-package com.simona.halep.test;
+package com.simona.halep.test.Database;
 
 import static org.junit.Assert.*;
 

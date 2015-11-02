@@ -3,6 +3,7 @@ package com.simona.halep.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simona.halep.Api.ResultsApi;
 import com.simona.halep.Api.StatsApi;
 import com.simona.halep.Database.Entities.News;
 import com.simona.halep.Database.Entities.Rank;
@@ -24,12 +25,15 @@ public class InitDatabase {
 	private static DBHelper helpDatabase;
 	private static InitDatabase instance = null;
 	private static StatsApi statsApi = null;
+	private static ResultsApi resultsApi = null;
 	
     public static InitDatabase getInstance(Activity activity) {
       if(instance == null) {
          instance = new InitDatabase();
          
          instance.statsApi = statsApi.getInstance();
+         instance.resultsApi = resultsApi.getInstance();
+         
          instance.helpDatabase = DBHelper.getInstance(); 
          instance.dbHelper = new MySQLiteHelper(activity, helpDatabase.DATABASE_NAME, helpDatabase.listDatabases);
 			
@@ -88,16 +92,12 @@ public class InitDatabase {
 	{
 		if(resultsDataSource.getAllResults().size() == 0)
 		{
-    	   Result result = new Result();
-    	   result.setDate("31/08/2016");
-    	   result.setTournament("Canada");
-    	   result.setRound("S1");
-    	   result.setResult("Loss");
-    	   result.setOpponent("Haha");
-    	   result.setRank("3");
-    	   result.setScore("6-1 6-2");
-    	   resultsDataSource.createResult(result.getDate(), result.getTournament(), result.getRound(), result.getResult(), result.getOpponent()
-	    		   , result.getRank(), result.getScore());
+			
+			for(Result result : resultsApi.getResults())
+			{	
+				resultsDataSource.createResult(result.getDate(), result.getTournament(), result.getRound(), result.getResult(), result.getOpponent()
+			    		   , result.getRank(), result.getScore());
+			}
 		}
 	}
 	
