@@ -112,9 +112,12 @@ public class InitDatabase {
 	
 	private void initStats()
 	{
-		for(Stats stat : statsApi.getStats())
+		if(statsDataSource.getAllStats().size() == 0)
 		{
-			statsDataSource.createStat(stat.getStat(),stat.getNrStatYtd(),stat.getNrStatCar());
+			for(Stats stat : statsApi.getStats())
+			{
+				statsDataSource.createStat(stat.getStat(),stat.getNrStatYtd(),stat.getNrStatCar());
+			}
 		}
 	}
 	
