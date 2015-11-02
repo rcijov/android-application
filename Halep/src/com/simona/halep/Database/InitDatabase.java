@@ -1,5 +1,6 @@
 package com.simona.halep.Database;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.simona.halep.Api.StatsApi;

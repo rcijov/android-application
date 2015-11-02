@@ -12,6 +12,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.os.StrictMode;
+
 import com.simona.halep.Database.Entities.Stats;
 
 public class StatsApi {
@@ -32,6 +34,10 @@ public class StatsApi {
 	
 	public static ArrayList<Stats> getStats()
 	{
+		// Avoid android.os.NetworkOnMainThreadException
+		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+		StrictMode.setThreadPolicy(policy); 
+		
 		String urlString = "https://www.kimonolabs.com/api/c6es6nss?apikey=EuXTaIb1UyOnvRL4HebQkXbTy1rfN6XY";
 		ArrayList<Stats> stats = new ArrayList<Stats>();
 		
