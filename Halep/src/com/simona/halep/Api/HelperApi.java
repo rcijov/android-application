@@ -5,6 +5,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import android.os.StrictMode;
+
 public class HelperApi {
 
 	private static HelperApi instance = null;
@@ -13,6 +15,10 @@ public class HelperApi {
 	{
 		if(instance == null)
 		{
+			// Avoid android.os.NetworkOnMainThreadException
+			StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+			StrictMode.setThreadPolicy(policy); 
+			
 			instance = new HelperApi();
 		}
 		
