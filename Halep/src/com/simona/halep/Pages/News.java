@@ -48,9 +48,9 @@ public class News extends Fragment {
 	       String txt = "";
 	       for(int i = 0; i < values.size(); i++)
 	       {
-	    	   txt = txt + "\n Date: " + values.get(i).getDate();
+	    	   txt = txt + "\nDate: " + values.get(i).getDate();
 	    	   txt = txt + " -- Title: " + values.get(i).getTitle();
-	    	   txt = txt + " -- Body: " + values.get(i).getBody();
+	    	   txt = txt + " -- Body: " + values.get(i).getBody() + "\n";
 	       }
 	       textView.setText(txt);
 	       

@@ -3,6 +3,8 @@ package com.simona.halep.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simona.halep.Api.NewsApi;
+import com.simona.halep.Api.RanksApi;
 import com.simona.halep.Api.ResultsApi;
 import com.simona.halep.Api.StatsApi;
 import com.simona.halep.Database.Entities.News;
@@ -24,8 +26,11 @@ public class InitDatabase {
 	private static MySQLiteHelper dbHelper;
 	private static DBHelper helpDatabase;
 	private static InitDatabase instance = null;
+	
 	private static StatsApi statsApi = null;
 	private static ResultsApi resultsApi = null;
+	private static RanksApi ranksApi = null;
+	private static NewsApi newsApi = null;
 	
     public static InitDatabase getInstance(Activity activity) {
       if(instance == null) {
@@ -33,6 +38,8 @@ public class InitDatabase {
          
          instance.statsApi = statsApi.getInstance();
          instance.resultsApi = resultsApi.getInstance();
+         instance.ranksApi = ranksApi.getInstance();
+         instance.newsApi = newsApi.getInstance();
          
          instance.helpDatabase = DBHelper.getInstance(); 
          instance.dbHelper = new MySQLiteHelper(activity, helpDatabase.DATABASE_NAME, helpDatabase.listDatabases);
@@ -49,11 +56,10 @@ public class InitDatabase {
 	{
 		if(newsDataSource.getAllNews().size() == 0)
 		{
-			com.simona.halep.Database.Entities.News news = new com.simona.halep.Database.Entities.News();
-			news.setDate("1/02/2015");
-			news.setTitle("Halep");
-			news.setBody("test test");
-			newsDataSource.createNews(news.getDate(), news.getTitle(), news.getBody());
+			for(com.simona.halep.Database.Entities.News news : newsApi.getNews())
+			{
+				newsDataSource.createNews(news.getDate(), news.getTitle(), news.getBody());
+			}
 		}
 	}
 	
@@ -68,14 +74,13 @@ public class InitDatabase {
 	
 	private void initRanks()
 	{
+		
 		if(ranksDataSource.getAllRanks().size() == 0)
 		{
-    	   Rank rank = new Rank();
-	       rank.setDate("31/08/2015");
-	       rank.setTournament("US OPEN");
-	       rank.setRound("S");
-	       rank.setPoints("780");
-	       ranksDataSource.createRank(rank.getDate(), rank.getTournament(), rank.getRound(), rank.getPoints());
+			for(Rank rank : ranksApi.getRanks())
+			{
+				ranksDataSource.createRank(rank.getDate(), rank.getTournament(), rank.getRound(), rank.getPoints());
+			}
 		}
 	}
 	
