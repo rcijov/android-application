@@ -3,6 +3,7 @@ package com.simona.halep.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.simona.halep.Api.HelperApi;
 import com.simona.halep.Api.NewsApi;
 import com.simona.halep.Api.RanksApi;
 import com.simona.halep.Api.ResultsApi;
@@ -27,6 +28,8 @@ public class InitDatabase {
 	private static DBHelper helpDatabase;
 	private static InitDatabase instance = null;
 	
+	private static HelperApi helpApi = null;
+	
 	private static StatsApi statsApi = null;
 	private static ResultsApi resultsApi = null;
 	private static RanksApi ranksApi = null;
@@ -36,6 +39,7 @@ public class InitDatabase {
       if(instance == null) {
          instance = new InitDatabase();
          
+         instance.helpApi = helpApi.getInstance(activity);
          instance.statsApi = statsApi.getInstance();
          instance.resultsApi = resultsApi.getInstance();
          instance.ranksApi = ranksApi.getInstance();
