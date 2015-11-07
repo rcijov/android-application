@@ -1,10 +1,16 @@
 package com.simona.halep.Api;
 
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.app.Activity;
 
 import com.simona.halep.Database.Entities.Result;
 import com.simona.halep.Database.Entities.Stats;
@@ -13,6 +19,7 @@ public class ResultsApi {
 
 	private static ResultsApi instance = null;
 	private static HelperApi helpApi;
+	private static Activity activity = null;
 	
 	public static ResultsApi getInstance()
 	{
@@ -20,12 +27,25 @@ public class ResultsApi {
 		{
 			instance = new ResultsApi();
 			helpApi = helpApi.getInstance();
+			activity = helpApi.getActivity();
 		}
 		return instance;
 	}
 	
 	public static ArrayList<Result> getResults()
 	{	
+		if(helpApi.isOnline())
+		{
+			return online();
+		}
+		else
+		{
+			return offline();
+		}
+	}
+	
+	private static ArrayList<Result> online()
+	{
 		String urlString = "https://www.kimonolabs.com/api/8l7zkyxm?apikey=EuXTaIb1UyOnvRL4HebQkXbTy1rfN6XY";
 		ArrayList<Result> resultArray = new ArrayList<Result>();
 		
@@ -67,6 +87,45 @@ public class ResultsApi {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		return resultArray;
+	}
+	
+	private static ArrayList<Result> offline()
+	{
+		ArrayList<Result> resultArray = new ArrayList<Result>();
+		String csvFile = "overviewResults.csv";
+		BufferedReader br = null;
+		String line = "";
+		String cvsSplitBy = ",";
+
+		try {
+			br = new BufferedReader(new InputStreamReader(activity.getAssets().open(csvFile)));
+			while ((line = br.readLine()) != null) {
+				String[] result = line.split(cvsSplitBy);
+				Result res = new Result();
+				res.setTournament(result[0].replace("\"",""));
+				res.setDate(result[1].replace("\"",""));
+				res.setRound(result[2].replace("\"",""));
+				res.setResult(result[3].replace("\"",""));
+				res.setOpponent(result[5].replace("\"",""));
+				res.setRank(result[6].replace("\"",""));
+				res.setScore(result[7].replace("\"",""));
+				resultArray.add(res);
+			}
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			if (br != null) {
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
 		}
 		return resultArray;
 	}

@@ -41,7 +41,7 @@ public class Stats extends Fragment {
 	       String txt = "Simona Halep Main Ranks";
 	       for(int i = 0; i < values.size(); i++)
 	       {
-	    	   txt = txt + "\n Stat: " + values.get(i).getStat();
+	    	   txt = txt + "\nStat: " + values.get(i).getStat();
 	    	   txt = txt + " -- Stat Ytd: " + values.get(i).getNrStatYtd();
 	    	   txt = txt + " -- Stat Car: " + values.get(i).getNrStatCar();
 	       }
