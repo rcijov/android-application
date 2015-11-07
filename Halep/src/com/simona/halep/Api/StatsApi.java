@@ -54,6 +54,39 @@ public class StatsApi {
 		}
 	}
 	
+	private static ArrayList<Stats> online()
+	{
+		String urlString = "https://www.kimonolabs.com/api/c6es6nss?apikey=EuXTaIb1UyOnvRL4HebQkXbTy1rfN6XY";
+		ArrayList<Stats> stats = new ArrayList<Stats>();
+		
+		try {
+
+			JSONObject jObject = new JSONObject(helpApi.getJSON(urlString));
+			JSONObject results = (JSONObject) jObject.get("results");
+			JSONArray array = (JSONArray) results.get("collection1");
+			
+			int size = array.length();
+			
+			for(int i = 0; i < size; i++)
+			{
+				JSONObject prop1 = (JSONObject) array.get(i);
+				Stats stat = new Stats();
+		    	stat.setStat(prop1.get("property1").toString());
+		    	stat.setNrStatCar(prop1.get("property2").toString());
+		    	stat.setNrStatYtd(prop1.get("property3").toString());
+		    	stats.add(stat);
+			}
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return stats;
+	}
+	
 	private static ArrayList<Stats> offline()
 	{
 		ArrayList<Stats> stats = new ArrayList<Stats>();
@@ -85,39 +118,6 @@ public class StatsApi {
 					e.printStackTrace();
 				}
 			}
-		}
-		return stats;
-	}
-	
-	private static ArrayList<Stats> online()
-	{
-		String urlString = "https://www.kimonolabs.com/api/c6es6nss?apikey=EuXTaIb1UyOnvRL4HebQkXbTy1rfN6XY";
-		ArrayList<Stats> stats = new ArrayList<Stats>();
-		
-		try {
-
-			JSONObject jObject = new JSONObject(helpApi.getJSON(urlString));
-			JSONObject results = (JSONObject) jObject.get("results");
-			JSONArray array = (JSONArray) results.get("collection1");
-			
-			int size = array.length();
-			
-			for(int i = 0; i < size; i++)
-			{
-				JSONObject prop1 = (JSONObject) array.get(i);
-				Stats stat = new Stats();
-		    	stat.setStat(prop1.get("property1").toString());
-		    	stat.setNrStatCar(prop1.get("property2").toString());
-		    	stat.setNrStatYtd(prop1.get("property3").toString());
-		    	stats.add(stat);
-			}
-			
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		return stats;
 	}
